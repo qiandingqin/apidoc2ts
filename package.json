@@ -1,0 +1,114 @@
+{
+	"name": "apidocsw2ts",
+	"displayName": "apidocsw2ts",
+	"description": "根据swagger文档自动生成typescript工具 支持多服务模式",
+	"version": "1.0.0",
+	"engines": {
+		"vscode": "^1.61.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onView:apidocsw2ts-view"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "panl",
+					"title": "代码生成工具",
+					"icon": "./assets/icon/ts.svg"
+				}
+			]
+		},
+		"views": {
+			"panl": [
+				{
+					"id": "apidocsw2ts-view",
+					"name": "apidocsw2ts"
+				}
+			]
+		},
+		"commands": [
+			{
+				"command": "apidocsw2ts.setting",
+				"title": "打开配置",
+				"icon": {
+					"dark": "./assets/icon/dark/setting.svg",
+					"light": "./assets/icon/dark/setting.svg"
+				}
+			},
+			{
+				"command": "apidocsw2ts.template",
+				"title": "打开模板",
+				"icon": {
+					"dark": "./assets/icon/dark/template.svg",
+					"light": "./assets/icon/dark/template.svg"
+				}
+			},
+			{
+				"command": "apidocsw2ts.sync",
+				"title": "同步",
+				"icon": {
+					"dark": "./assets/icon/dark/sync.svg",
+					"light": "./assets/icon/light/sync.svg"
+				}
+			},
+			{
+				"command": "apidocsw2ts.refresh",
+				"title": "刷新全部项目",
+				"icon": {
+					"dark": "./assets/icon/dark/refresh.svg",
+					"light": "./assets/icon/dark/refresh.svg"
+				}
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "apidocsw2ts.refresh",
+					"when": "view == apidocsw2ts-view",
+					"group": "navigation"
+				},
+				{
+					"command": "apidocsw2ts.template",
+					"when": "view == apidocsw2ts-view",
+					"group": "navigation"
+				},
+				{
+					"command": "apidocsw2ts.setting",
+					"when": "view == apidocsw2ts-view",
+					"group": "navigation"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"pretest": "yarn run compile && yarn run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js",
+		"build": "vsce package"
+	},
+	"devDependencies": {
+		"@types/ejs": "^3.1.0",
+		"@types/glob": "^7.1.4",
+		"@types/mocha": "^9.0.0",
+		"@types/node": "14.x",
+		"@types/vscode": "^1.64.0",
+		"@typescript-eslint/eslint-plugin": "^4.31.1",
+		"@typescript-eslint/parser": "^4.31.1",
+		"@vscode/test-electron": "^1.6.2",
+		"eslint": "^7.32.0",
+		"glob": "^7.1.7",
+		"mocha": "^9.1.1",
+		"typescript": "^4.4.3"
+	},
+	"dependencies": {
+		"ejs": "^3.1.6"
+	}
+}

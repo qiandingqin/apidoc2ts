@@ -1,0 +1,37 @@
+<%_ var d = new Date() _%>
+/**
+ * aoudocsw2ts 插件
+ * @name <%= context.title %> 实体接口
+ * @version <%= context.version %>
+ * @description <% context.description %>
+ * @author by大男人主义 <826541524@qq.com>
+ * github https://github.com/qiandingqin/swaggertots.git
+ * <%= d.getFullYear() %>年<%= d.getMonth() + 1 %>月<%= d.getDate() %>日
+ * 插件自动生成的代码尽量不要手动更改 避免重新生成后被覆盖的问题
+ */
+
+export {}
+declare global {
+  /**
+  * @description <%= config.name %>
+  */
+  namespace NS<%= ejsHelper.firstUpper(context.prefix) %> {
+  <%_ for(var i = 0; i < context.entitys.length; i++) { _%>
+
+    <%_ var entity = context.entitys[i] _%>
+    /**
+    * @description <%= entity.title %>
+    */
+    interface <%= ejsHelper.firstUpper(entity.title) %> %> {
+    <%_ for(var j = 0; j < entity.properties.length; j++) { _%>
+      <%_ var member = entity.properties[j] %>
+      /**
+      * @description <%= member.desc %>
+      */
+      <%= member.title %><%= member.required ? '' : '?' %>: <%- member.type  %>
+    <% } _%>
+
+    }
+  <% } _%>
+  }
+}

@@ -1,0 +1,35 @@
+<%_ var d = new Date() _%>
+/**
+ * aoudocsw2ts 插件
+ * @name <%= context.title %> API信息
+ * @version <%= context.version %>
+ * @description <% context.description %>
+ * @author by大男人主义 <826541524@qq.com>
+ * github https://github.com/qiandingqin/swaggertots.git
+ * <%= d.getFullYear() %>年<%= d.getMonth() + 1 %>月<%= d.getDate() %>日
+ * 插件自动生成的代码尽量不要手动更改 避免重新生成后被覆盖的问题
+ */
+
+/**
+ * @description <%= api.title %> 
+ * 请求方式 <%= api.method %>
+ * 参数类型 <%= api.contentType %> 
+ * 入参方式 <%= api.in %>
+ */
+export const <%= ejsHelper.firstUpper(api.name) %>API = '/<%= context.prefix %><% api.path %>/<%= api.name %>';
+
+<%_ if (api.request.length) { _%>
+/**
+ * @description 请求参数 
+ */
+export interface Req<%= ejsHelper.firstUpper(api.name) %> {
+<%_ for(var i = 0; i < api.request.length; i++) { _%>
+  <%_ var member = api.request[i] %>
+  <%_ var ns = 'NS' + ejsHelper.firstUpper(context.prefix) + '.' + member.type _%>
+  /**
+  * @description <%= member.desc %>
+  */
+  <%= member.title %><%= member.required ? '' : '?' %>: <%- ejsHelper.checkBaseType(member.type.replace(/\<([^\)]*)\>/g, '<'+ ns +'>')) ? member.type : ns %>
+<% } _%>
+}
+<%_ } _%>

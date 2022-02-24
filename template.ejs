@@ -1,0 +1,125 @@
+/**
+ * swaggerToTs 插件
+ * @author by大男人主义 <826541524@qq.com>
+ * github https://github.com/qiandingqin/swaggertots.git
+ * 2021年10月19日
+ * 插件自动生成的代码尽量不要手动更改 避免重新生成后被覆盖的问题
+ */
+
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios from '@/common/axios'
+
+const api = '<%= root.base %><%= x.api.path _%>';
+<%_ var filterNames = ['integer',] _%>
+<%_ var firststr = x.api.id[0].toLocaleUpperCase() _%>
+<%_ var name = firststr + x.api.id.substr(1) _%>
+<%_ var request = 'IReq' + name; _%>
+<%_ var response = 'IRes' + name; _%>
+<%_ var isFormData = x.api.contentType.indexOf('multipart/form-data') != -1 _%>
+
+<%# 渲染interface _%>
+<%_ for (var i = 0; i < entitys.length; i++) { _%>
+<%_ var entity = entitys[i] _%>
+/**
+ * @description <%= entity.description %>
+ */
+export interface <%= entity.title %> {
+<% for (var key in entity.properties) { %>
+  <%_ var el = entity.properties[key] _%>
+  <%_ var type = el.originalRef ? el.originalRef : el.type.indexOf('integer') != -1 ? 'number' : el.type == 'file' ? 'File' : el.type _%>
+  /**
+   * @description <%= el.description %>
+   * @type {<%- type == 'array' ? 'Array<'+ el.items.originalRef +'>' : type %>}
+   */
+  <%= key %>: <%- type == 'array' ? 'Array<'+ el.items.originalRef +'>' : type %>,
+<% } _%>
+}
+<%_ } _%>
+
+/**
+ * @description <%= x.api.desc %> 请求参数
+ */
+export interface <%= request %> {
+<%_ var params = x.api.params || [] _%>
+<%_ for(var i = 0; i < params.length; i++) { _%>
+  <%_ var type = params[i].useEntity && !params[i].type ? params[i].useEntity : params[i].type.indexOf('integer') != -1 ? 'number' : params[i].type == 'file' ? 'File' : params[i].type _%>
+  /**
+   * @description <%= params[i].description %>
+   * @type {<%- type == 'array' ? 'Array<'+ el.items.originalRef +'>' : type %>}
+   */
+  <%= params[i].name _%><%= params[i].required ? '' : '?' %>: <%- type == 'array' ? 'Array<'+ el.items.originalRef +'>' : type _%>,
+<% } _%>
+}
+
+<%_ var res = x.api.response.properties; _%>
+/**
+ * @description <%= x.api.desc %> 响应参数
+ */
+ export interface <%= response %> {
+<% for (var key in res) { %>
+  <%_ var el = res[key] _%>
+  <%_ var type = el.originalRef ? el.originalRef : el.type.indexOf('integer') != -1 ? 'number' : el.type == 'file' ? 'File' : el.type _%>
+  /**
+   * @description <%= el.description %>
+   * @type {<%- type == 'array' ? 'Array<'+ el.items.originalRef +'>' : type %>}
+   */
+  <%= key %>: <%- type == 'array' ? 'Array<'+ el.items.originalRef +'>' : type %>,
+<% } _%>
+}
+
+/**
+ * @description <%= x.desc %> <%= x.name %>
+ * @param option <%= x.api.desc %> 请求实体
+ * @param config 
+ */
+const <%= name %> = async (option: <%= request %>, config?: AxiosRequestConfig): Promise<<%= response %>> => {
+  return new Promise((resolve, reject) => {
+    const conf: AxiosRequestConfig = {};
+
+    <%_ if (x.api.method == 'post') { _%>
+      conf["headers"] = { "Content-Type": "<%= x.api.contentType %>" }
+      conf.params = {}
+    <%_ } _%>
+    <%_ if (x.api.method == 'get') { _%>
+      conf.params = option;
+      axios.get(api, { ...conf, ...config })
+      .then((result: AxiosResponse<<%= response %>>) => {
+        const data = result.data;
+        resolve(data);
+      })
+      .catch((error: any) => reject(error))
+    <%_ } else { _%>
+
+      // 合并body参数
+      let o: any = {};
+      const querys = '<%= querys.map(v => v.name) %>'.split(',');
+      const optionCopy = option as any;
+      <%= isFormData ? 'const formData = new FormData();' : '' _%>
+
+      for (const key in optionCopy) {
+        const element = optionCopy[key];
+
+        if (!querys.find(x => x == key)) {
+        <%_ if (!isFormData) { _%>
+          Object.assign(o, element)
+        <%_ } else { _%>
+          formData.append(key, element);
+        <%_ } _%>
+        } else {
+          o = null;
+          conf.params[key] = element;
+        }
+      }
+
+      axios.post(api, <%= !isFormData ? 'o' : 'formData' %>, { ...conf, ...config })
+      .then((result: AxiosResponse<<%= response %>>) => {
+        const data = result.data;
+        resolve(data);
+      })
+      .catch((error: any) => reject(error))
+    <% } %>
+  })
+}
+
+export { <%= name %> }
+export default <%= name %>;
