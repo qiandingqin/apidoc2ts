@@ -16,7 +16,7 @@
  * 参数类型 <%= api.contentType %> 
  * 入参方式 <%= api.in %>
  */
-export const <%= ejsHelper.firstUpper(api.name) %>API = '/<%= context.prefix %><% api.path %>/<%= api.name %>';
+export const <%= ejsHelper.firstUpper(api.name) %>API = '/<%= context.prefix.replace(/\_/g, '-') %><%= api.path %>/<%= api.name %>';
 
 <%_ if (api.request.length) { _%>
 /**
