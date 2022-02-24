@@ -2,9 +2,13 @@
 	"name": "apidocsw2ts",
 	"displayName": "apidocsw2ts",
 	"description": "根据swagger文档自动生成typescript工具 支持多服务模式",
+	"publisher": "wangxiaobao",
 	"version": "1.0.0",
+	"repository": {
+		"url": "https://github.com/qiandingqin/apidoc2ts.git"
+	},
 	"engines": {
-		"vscode": "^1.61.0"
+		"vscode": "^1.64.0"
 	},
 	"categories": [
 		"Other"
